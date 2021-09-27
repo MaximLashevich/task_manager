@@ -13,11 +13,11 @@ public class User<T> implements Printable {
         this.id = id;
     }
 
-    public T getId(){
+    public T getId() {
         return this.id;
     }
 
-    public void setId(T id){
+    public void setId(T id) {
         this.id = id;
     }
 
@@ -27,7 +27,7 @@ public class User<T> implements Printable {
                 ("User " + "\n" + "name: " + this.name + "\n" + "age: " + this.age + "\n" + "id: " + this.id);
     }
 
-        public static class Builder<T> {
+    public static class Builder<T> {
         private String name;
         private int age;
         private T id;
