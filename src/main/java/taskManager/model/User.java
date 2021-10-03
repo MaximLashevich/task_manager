@@ -1,8 +1,6 @@
-package taskManager.models;
+package taskManager.model;
 
-import taskManager.interfaces.Printable;
-
-public class User<T> implements Printable {
+public class User<T> {
     private String name;
     private int age;
     private T id;
@@ -22,9 +20,10 @@ public class User<T> implements Printable {
     }
 
     @Override
-    public void print() {
-        System.out.println
-                ("User " + "\n" + "name: " + this.name + "\n" + "age: " + this.age + "\n" + "id: " + this.id);
+    public String toString() {
+        String template = "\n\nUser ID: %s\nName: %s\nAge: %d\n";
+        System.out.printf(template, id, name, age);
+        return template;
     }
 
     public static class Builder<T> {
