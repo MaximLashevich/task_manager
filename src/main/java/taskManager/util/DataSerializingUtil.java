@@ -8,8 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-public final class DataStoringUtil {
-    private static final String FILENAME = "src/main/resources/db";
+public final class DataSerializingUtil {
+    private static final String FILENAME = "src/main/resources/db/db";
 
     public static void save(Object object) {
         try (OutputStream fileOutputStream = new FileOutputStream(FILENAME);

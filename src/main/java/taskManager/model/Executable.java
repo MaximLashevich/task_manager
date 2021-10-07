@@ -1,4 +1,4 @@
-package taskManager.interfaces;
+package taskManager.model;
 
 public interface Executable {
 
