@@ -7,10 +7,10 @@ import taskManager.model.MultiTask;
 import taskManager.model.SingleTask;
 import taskManager.model.User;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 
 /**
  * Предметная область: планировщик задач.
@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 
 public class App {
     public static void main(String[] args) {
+        AbstractTask abstractTask = null;
         List<AbstractTask> tasks = new ArrayList<>();
         System.out.println("Please type any symbol to begin entering new tasks or type \"cancel\" to stop input");
         Scanner scanner = new Scanner(System.in);
@@ -50,7 +51,10 @@ public class App {
         while (proceed.compareToIgnoreCase("cancel") != 0) {
             System.out.println("\nEnter new task's Type: SINGLE or MULTI or type \"cancel\" to stop input");
             String type = scanner.nextLine();
-            if (type.compareToIgnoreCase("cancel") != 0) {
+
+            if (type.equalsIgnoreCase("MULTI")) {
+                System.out.println("Enter a number how many times task has to be repeated");
+                String repeatNumber = scanner.nextLine();
                 System.out.println("Enter task's Category: WORK, HOME, FAMILY or FRIENDS");
                 String category = scanner.nextLine();
                 if (TaskCategory.categoryValidate(category) == false) {
@@ -65,8 +69,42 @@ public class App {
                 String description = scanner.nextLine();
                 System.out.println("Enter task's Deadline in format \"dd.mm.yyyy\":");
                 String deadline = scanner.nextLine();
-                tasks.add(taskCreate(type, category, priority, description, deadline));
-                System.out.println("Task was successfully added!");
+
+                abstractTask = multiTaskCreate(repeatNumber, type, category, priority, description, deadline);
+
+                for (int i = 0; i < tasks.size(); i++) {
+                    if (abstractTask.getDescription().compareToIgnoreCase(tasks.get(i).getDescription()) != 0) {
+                        tasks.add(abstractTask);
+                    }
+                }
+
+            } else if (type.equalsIgnoreCase("SINGLE")) {
+                System.out.println("Enter one key word - a reminder about this task");
+                String reminder = scanner.nextLine();
+                System.out.println("Enter task's Category: WORK, HOME, FAMILY or FRIENDS");
+                String category = scanner.nextLine();
+                if (TaskCategory.categoryValidate(category) == false) {
+                    break;
+                }
+                System.out.println("Enter task's Priority: HIGH, MEDIUM or LOW");
+                String priority = scanner.nextLine();
+                if (TaskPriority.priorityValidate(priority) == false) {
+                    break;
+                }
+                System.out.println("Enter task's Description:");
+                String description = scanner.nextLine();
+                System.out.println("Enter task's Deadline in format \"dd.mm.yyyy\":");
+                String deadline = scanner.nextLine();
+
+                abstractTask = singleTaskCreate(reminder, type, category, priority, description, deadline);
+
+                for (int i = 0; i < tasks.size(); i++) {
+                    if (abstractTask.getDescription().compareToIgnoreCase(tasks.get(i).getDescription()) != 0) {
+                        tasks.add(abstractTask);
+                    }
+                }
+
+
             } else {
                 break;
             }
@@ -75,7 +113,8 @@ public class App {
         tasks.forEach(System.out::println);
 
         tasks.stream()
-                .filter(task -> task.getCategory().equals(TaskCategory.WORK))
+                .filter(task -> task.getCategory()
+                        .equals(TaskCategory.WORK))
                 .forEach(System.out::println);
 
         tasks.stream()
@@ -90,17 +129,16 @@ public class App {
         user4.toString();
     }
 
-    public static AbstractTask taskCreate(String type, String category, String priority, String description, String deadline) {
-        AbstractTask task;
-        if (type.equalsIgnoreCase("MULTI")) {
-            task = new MultiTask(type, TaskCategory.findCategoryValue(category),
-                    TaskPriority.findPriorityValue(priority), description, deadline);
-        } else {
-            task = new SingleTask(type, TaskCategory.findCategoryValue(category),
-                    TaskPriority.findPriorityValue(priority), description, deadline);
-        }
-
-        return task;
+    public static AbstractTask multiTaskCreate(String repeatNumber, String type, String category, String priority, String description, String deadline) {
+        return new MultiTask(repeatNumber, type, TaskCategory.findCategoryValue(category),
+                TaskPriority.findPriorityValue(priority), description, deadline);
     }
 
+    public static AbstractTask singleTaskCreate(String reminder, String type, String category, String priority, String description, String deadline) {
+        return new SingleTask(reminder, type, TaskCategory.findCategoryValue(category),
+                TaskPriority.findPriorityValue(priority), description, deadline);
+    }
 }
+
+
+
