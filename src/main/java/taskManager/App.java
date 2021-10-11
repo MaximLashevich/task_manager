@@ -71,13 +71,11 @@ public class App {
                 break;
             }
         }
-        tasks.forEach(task -> task.setId(tasks.indexOf(task) + 1));
-        tasks.forEach(AbstractTask::toString);
+
+        tasks.forEach(System.out::println);
 
         tasks.stream()
                 .filter(task -> task.getCategory().equals(TaskCategory.WORK))
-
-                .collect(Collectors.toList())
                 .forEach(System.out::println);
 
         tasks.stream()
@@ -101,6 +99,7 @@ public class App {
             task = new SingleTask(type, TaskCategory.findCategoryValue(category),
                     TaskPriority.findPriorityValue(priority), description, deadline);
         }
+
         return task;
     }
 

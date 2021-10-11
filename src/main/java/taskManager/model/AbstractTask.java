@@ -1,11 +1,9 @@
 package taskManager.model;
 
 import taskManager.enums.TaskCategory;
-import taskManager.interfaces.Executable;
 import taskManager.enums.TaskPriority;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -85,7 +83,7 @@ public abstract class AbstractTask implements Executable, Comparable<AbstractTas
         return this.id = id;
     }
 
-    public int getID() {
+    public int getId() {
         return this.id;
     }
 
@@ -93,12 +91,12 @@ public abstract class AbstractTask implements Executable, Comparable<AbstractTas
         return this.date;
     }
 
-    @Override
+    @Override // если бы у Синглтаск и Мультитаск были дополнительные поля, то этот метод нужно было бы переопределить в каждом классе
     public String toString() {
         String template = "\n\nCreated: %s\nTask ID: %d\nTask Type: %s\nTask Category: %s\nTask Priority: %s\nTask Description: %s\nTask Deadline: %s\n";
-        System.out.printf(template, date, id, type, taskCategory, taskPriority, description, deadline);
-        System.out.println(done ? "This task IS COMPLETED" : "This task IS NOT COMPLETED");
-        return template;
+        String result = String.format(template, date, id, type, taskCategory, taskPriority, description, deadline);
+        result += done ? "This task IS COMPLETED\n" : "This task IS NOT COMPLETED\n";
+        return result;
     }
 
     @Override
