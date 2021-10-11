@@ -26,9 +26,7 @@ public abstract class AbstractTask implements Executable, Comparable<AbstractTas
         this.taskPriority = taskPriority;
         this.description = description;
         this.deadline = deadline;
-        this.done = false;
         this.date = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date());
-
     }
 
     public String setType(String type) {
@@ -91,7 +89,7 @@ public abstract class AbstractTask implements Executable, Comparable<AbstractTas
         return this.date;
     }
 
-    @Override // если бы у Синглтаск и Мультитаск были дополнительные поля, то этот метод нужно было бы переопределить в каждом классе
+    @Override
     public String toString() {
         String template = "\n\nCreated: %s\nTask ID: %d\nTask Type: %s\nTask Category: %s\nTask Priority: %s\nTask Description: %s\nTask Deadline: %s\n";
         String result = String.format(template, date, id, type, taskCategory, taskPriority, description, deadline);
