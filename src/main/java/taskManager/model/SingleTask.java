@@ -1,16 +1,17 @@
 package taskManager.model;
 
-import taskManager.enums.TaskCategory;
-import taskManager.enums.TaskPriority;
+import taskManager.enumeration.TaskCategory;
+import taskManager.enumeration.TaskPriority;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class SingleTask extends AbstractTask {
 
     private static String reminder;
 
-    public SingleTask(String reminder, String type, TaskCategory taskCategory, TaskPriority taskPriority, String description, String deadline) {
+    public SingleTask(String reminder, String type, TaskCategory taskCategory, TaskPriority taskPriority, String description, LocalDate deadline) {
         super(type, taskCategory, taskPriority, description, deadline);
         this.reminder = reminder;
         this.date = new SimpleDateFormat("dd.MM.yy HH:mm:ss").format(new Date());

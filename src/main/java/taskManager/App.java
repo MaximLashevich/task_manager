@@ -1,15 +1,23 @@
 package taskManager;
 
-import taskManager.enums.TaskCategory;
-import taskManager.enums.TaskPriority;
+import taskManager.enumeration.TaskCategory;
+import taskManager.enumeration.TaskPriority;
 import taskManager.model.AbstractTask;
 import taskManager.model.MultiTask;
 import taskManager.model.SingleTask;
 import taskManager.model.User;
+import taskManager.util.DataRepositoryUtil;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 
 /**
@@ -36,15 +44,23 @@ import java.util.Scanner;
  * 1. Сортировать, фильтровать (выбрать с определенным приоритетом или категорией)
  * 2. Вывести по запросу пользователя названия всех задач (map)
  * 3. Перед добавлением задачи проверить, что задачи с таким именем не существует
+ * <p>
+ * 1. Изменить формат поля "дата" на более подходящий, чем String
+ * 2. Выводить пользователю количество времени, которое осталось до дедлайна
+ * <p>
+ * 1. Cохранять задачи и пользователей между запусками программы.
  *
  * @author Maksim Lashevich
  * @version 1
  */
 
 public class App {
+
     public static void main(String[] args) {
         AbstractTask abstractTask = null;
         List<AbstractTask> tasks = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
         System.out.println("Please type any symbol to begin entering new tasks or type \"cancel\" to stop input");
         Scanner scanner = new Scanner(System.in);
         String proceed = scanner.nextLine();
@@ -69,14 +85,10 @@ public class App {
                 String description = scanner.nextLine();
                 System.out.println("Enter task's Deadline in format \"dd.mm.yyyy\":");
                 String deadline = scanner.nextLine();
+                LocalDate deadlineDate = LocalDate.parse(deadline, formatter);
 
-                abstractTask = multiTaskCreate(repeatNumber, type, category, priority, description, deadline);
-
-                for (int i = 0; i < tasks.size(); i++) {
-                    if (abstractTask.getDescription().compareToIgnoreCase(tasks.get(i).getDescription()) != 0) {
-                        tasks.add(abstractTask);
-                    }
-                }
+                abstractTask = multiTaskCreate(repeatNumber, type, category, priority, description, deadlineDate);
+                taskAdd(abstractTask, tasks);
 
             } else if (type.equalsIgnoreCase("SINGLE")) {
                 System.out.println("Enter one key word - a reminder about this task");
@@ -95,15 +107,10 @@ public class App {
                 String description = scanner.nextLine();
                 System.out.println("Enter task's Deadline in format \"dd.mm.yyyy\":");
                 String deadline = scanner.nextLine();
+                LocalDate deadlineDate = LocalDate.parse(deadline, formatter);
 
-                abstractTask = singleTaskCreate(reminder, type, category, priority, description, deadline);
-
-                for (int i = 0; i < tasks.size(); i++) {
-                    if (abstractTask.getDescription().compareToIgnoreCase(tasks.get(i).getDescription()) != 0) {
-                        tasks.add(abstractTask);
-                    }
-                }
-
+                abstractTask = singleTaskCreate(reminder, type, category, priority, description, deadlineDate);
+                taskAdd(abstractTask, tasks);
 
             } else {
                 break;
@@ -121,6 +128,15 @@ public class App {
                 .map(AbstractTask::getDescription)
                 .forEach(System.out::println);
 
+        tasks.forEach(task -> {
+            String stringDate = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH).format(new Date());
+            LocalDate todayDate = LocalDate.parse(stringDate, formatter);
+            long daysBeforeDeadline = DAYS.between(todayDate, task.getDeadline());
+            System.out.println();
+            System.out.println(task.getDescription());
+            System.out.println(daysBeforeDeadline);
+        });
+
         User<String> builtUser1 = new User.Builder<String>().name("Vasya").age(35).id("1").build();
         User<Integer> builtUser2 = new User.Builder<Integer>().name("Petya").age(25).id(2).build();
         User<String> user3 = new User<>("Tom", 28, "3");
@@ -129,14 +145,26 @@ public class App {
         user4.toString();
     }
 
-    public static AbstractTask multiTaskCreate(String repeatNumber, String type, String category, String priority, String description, String deadline) {
+    public static AbstractTask multiTaskCreate(String repeatNumber, String type, String category, String priority, String description, LocalDate deadline) {
         return new MultiTask(repeatNumber, type, TaskCategory.findCategoryValue(category),
                 TaskPriority.findPriorityValue(priority), description, deadline);
     }
 
-    public static AbstractTask singleTaskCreate(String reminder, String type, String category, String priority, String description, String deadline) {
+    public static AbstractTask singleTaskCreate(String reminder, String type, String category, String priority, String description, LocalDate deadline) {
         return new SingleTask(reminder, type, TaskCategory.findCategoryValue(category),
                 TaskPriority.findPriorityValue(priority), description, deadline);
+    }
+
+    public static void taskAdd(AbstractTask abstractTask, List<AbstractTask> tasks){
+        int count = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            if (abstractTask.getDescription().compareToIgnoreCase(tasks.get(i).getDescription()) == 0) {
+                count++;
+            }
+        }
+        if(count == 0){
+            tasks.add(abstractTask);
+        }
     }
 }
 

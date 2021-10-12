@@ -1,9 +1,10 @@
 package taskManager.model;
 
-import taskManager.enums.TaskCategory;
-import taskManager.enums.TaskPriority;
+import taskManager.enumeration.TaskCategory;
+import taskManager.enumeration.TaskPriority;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -17,10 +18,10 @@ public abstract class AbstractTask implements Executable, Comparable<AbstractTas
     private TaskCategory taskCategory;
     private TaskPriority taskPriority;
     private String description;
-    private String deadline;
+    private LocalDate deadline;
 
     public AbstractTask(String type, TaskCategory taskCategory, TaskPriority taskPriority, String description,
-                        String deadline) {
+                        LocalDate deadline) {
         this.type = type;
         this.taskCategory = taskCategory;
         this.taskPriority = taskPriority;
@@ -61,11 +62,11 @@ public abstract class AbstractTask implements Executable, Comparable<AbstractTas
         return this.description;
     }
 
-    public String setDeadline(String deadline) {
+    public LocalDate setDeadline(LocalDate deadline) {
         return this.deadline = deadline;
     }
 
-    public String getDeadline() {
+    public LocalDate getDeadline() {
         return this.deadline;
     }
 
