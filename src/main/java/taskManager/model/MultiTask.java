@@ -1,15 +1,16 @@
 package taskManager.model;
 
-import taskManager.enums.TaskPriority;
-import taskManager.enums.TaskCategory;
+import taskManager.enumeration.TaskPriority;
+import taskManager.enumeration.TaskCategory;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class MultiTask extends AbstractTask {
 
     private static String repeatNumber;
 
-    public MultiTask(String repeatNumber, String type, TaskCategory taskCategory, TaskPriority taskPriority, String description, String deadline) {
+    public MultiTask(String repeatNumber, String type, TaskCategory taskCategory, TaskPriority taskPriority, String description, LocalDate deadline) {
         super(type, taskCategory, taskPriority, description, deadline);
         this.repeatNumber = repeatNumber;
         this.date = new SimpleDateFormat("dd.MM.yy HH:mm:ss").format(new Date());

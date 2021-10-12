@@ -1,4 +1,4 @@
-package taskManager.enums;
+package taskManager.enumeration;
 
 public enum TaskPriority {
     HIGH,
