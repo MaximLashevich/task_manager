@@ -6,7 +6,8 @@ import taskManager.model.AbstractTask;
 import taskManager.model.MultiTask;
 import taskManager.model.SingleTask;
 import taskManager.model.User;
-import taskManager.util.DataRepositoryUtil;
+import taskManager.util.Repository.DataRepositoryUtilImpl;
+import taskManager.util.Service.TaskServiceUtilImpl;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -60,6 +61,8 @@ public class App {
         AbstractTask abstractTask = null;
         List<AbstractTask> tasks = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        DataRepositoryUtilImpl dataRepositoryUtilImpl = new DataRepositoryUtilImpl();
+        TaskServiceUtilImpl taskServiceUtilImpl = new TaskServiceUtilImpl(dataRepositoryUtilImpl);
 
         System.out.println("Please type any symbol to begin entering new tasks or type \"cancel\" to stop input");
         Scanner scanner = new Scanner(System.in);
@@ -88,6 +91,8 @@ public class App {
                 LocalDate deadlineDate = LocalDate.parse(deadline, formatter);
 
                 abstractTask = multiTaskCreate(repeatNumber, type, category, priority, description, deadlineDate);
+                taskServiceUtilImpl.save(abstractTask);
+
                 taskAdd(abstractTask, tasks);
 
             } else if (type.equalsIgnoreCase("SINGLE")) {
@@ -110,6 +115,8 @@ public class App {
                 LocalDate deadlineDate = LocalDate.parse(deadline, formatter);
 
                 abstractTask = singleTaskCreate(reminder, type, category, priority, description, deadlineDate);
+                taskServiceUtilImpl.save(abstractTask);
+
                 taskAdd(abstractTask, tasks);
 
             } else {
@@ -136,6 +143,7 @@ public class App {
             System.out.println(task.getDescription());
             System.out.println(daysBeforeDeadline);
         });
+
 
         User<String> builtUser1 = new User.Builder<String>().name("Vasya").age(35).id("1").build();
         User<Integer> builtUser2 = new User.Builder<Integer>().name("Petya").age(25).id(2).build();
