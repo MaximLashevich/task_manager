@@ -1,5 +1,7 @@
 package taskManager.util;
 
+import taskManager.model.AbstractTask;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,7 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 public final class DataSerializingUtil {
-    private static final String FILENAME = "src/main/resources/db/db";
+    private static final String FILENAME = "src/main/resources/db";
 
     public static void save(Object object) {
         try (OutputStream fileOutputStream = new FileOutputStream(FILENAME);
