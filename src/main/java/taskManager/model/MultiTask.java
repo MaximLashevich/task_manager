@@ -1,15 +1,19 @@
 package taskManager.model;
 
+import lombok.Builder;
 import taskManager.enumeration.TaskPriority;
 import taskManager.enumeration.TaskCategory;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class MultiTask extends AbstractTask {
+public class MultiTask extends AbstractTask implements Serializable {
 
-    private static String repeatNumber;
+    private String repeatNumber;
 
+    @Builder
     public MultiTask(String repeatNumber, String type, TaskCategory taskCategory, TaskPriority taskPriority, String description, LocalDate deadline) {
         super(type, taskCategory, taskPriority, description, deadline);
         this.repeatNumber = repeatNumber;

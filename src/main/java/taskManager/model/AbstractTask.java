@@ -1,15 +1,17 @@
 package taskManager.model;
 
+import lombok.Builder;
 import taskManager.enumeration.TaskCategory;
 import taskManager.enumeration.TaskPriority;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
 
-public abstract class AbstractTask implements Executable, Comparable<AbstractTask> {
+public abstract class AbstractTask implements Executable, Comparable<AbstractTask>, Serializable {
 
     protected String date;
     protected boolean done;
@@ -20,6 +22,7 @@ public abstract class AbstractTask implements Executable, Comparable<AbstractTas
     private String description;
     private LocalDate deadline;
 
+    @Builder
     public AbstractTask(String type, TaskCategory taskCategory, TaskPriority taskPriority, String description,
                         LocalDate deadline) {
         this.type = type;
@@ -93,7 +96,7 @@ public abstract class AbstractTask implements Executable, Comparable<AbstractTas
     @Override
     public String toString() {
         String template = "\n\nCreated: %s\nTask ID: %d\nTask Type: %s\nTask Category: %s\nTask Priority: %s\nTask Description: %s\nTask Deadline: %s\n";
-        String result = String.format(template, date, id, type, taskCategory, taskPriority, description, deadline);
+        String result = String.format(template, getDate(), getId(), getType(), getCategory(), getPriority(), getDescription(), getDeadline());
         result += done ? "This task IS COMPLETED\n" : "This task IS NOT COMPLETED\n";
         return result;
     }

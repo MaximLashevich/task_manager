@@ -1,16 +1,19 @@
 package taskManager.model;
 
+import lombok.Builder;
 import taskManager.enumeration.TaskCategory;
 import taskManager.enumeration.TaskPriority;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class SingleTask extends AbstractTask {
+public class SingleTask extends AbstractTask implements Serializable {
 
-    private static String reminder;
+    private String reminder;
 
+    @Builder
     public SingleTask(String reminder, String type, TaskCategory taskCategory, TaskPriority taskPriority, String description, LocalDate deadline) {
         super(type, taskCategory, taskPriority, description, deadline);
         this.reminder = reminder;

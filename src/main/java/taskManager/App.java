@@ -6,19 +6,14 @@ import taskManager.model.AbstractTask;
 import taskManager.model.MultiTask;
 import taskManager.model.SingleTask;
 import taskManager.model.User;
-import taskManager.util.Repository.DataRepositoryUtilImpl;
-import taskManager.util.Service.TaskServiceUtilImpl;
+import taskManager.util.DataManagementUtil;
+import taskManager.util.repository.TaskRepositoryImpl;
+import taskManager.util.service.TaskServiceImpl;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 
 /**
@@ -57,12 +52,19 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 public class App {
 
+    private static final TaskRepositoryImpl taskRepositoryImpl = new TaskRepositoryImpl();
+    private static final TaskServiceImpl taskServiceImpl = new TaskServiceImpl(taskRepositoryImpl);
+
+
     public static void main(String[] args) {
-        AbstractTask abstractTask = null;
-        List<AbstractTask> tasks = new ArrayList<>();
+
+        DataManagementUtil.load();
+
+        AbstractTask abstractTask;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        DataRepositoryUtilImpl dataRepositoryUtilImpl = new DataRepositoryUtilImpl();
-        TaskServiceUtilImpl taskServiceUtilImpl = new TaskServiceUtilImpl(dataRepositoryUtilImpl);
+
+        DataManagementUtil.getTasks().forEach(System.out::println);
 
         System.out.println("Please type any symbol to begin entering new tasks or type \"cancel\" to stop input");
         Scanner scanner = new Scanner(System.in);
@@ -91,9 +93,8 @@ public class App {
                 LocalDate deadlineDate = LocalDate.parse(deadline, formatter);
 
                 abstractTask = multiTaskCreate(repeatNumber, type, category, priority, description, deadlineDate);
-                taskServiceUtilImpl.save(abstractTask);
+                taskServiceImpl.save(abstractTask);
 
-                taskAdd(abstractTask, tasks);
 
             } else if (type.equalsIgnoreCase("SINGLE")) {
                 System.out.println("Enter one key word - a reminder about this task");
@@ -115,34 +116,15 @@ public class App {
                 LocalDate deadlineDate = LocalDate.parse(deadline, formatter);
 
                 abstractTask = singleTaskCreate(reminder, type, category, priority, description, deadlineDate);
-                taskServiceUtilImpl.save(abstractTask);
-
-                taskAdd(abstractTask, tasks);
+                taskServiceImpl.save(abstractTask);
 
             } else {
                 break;
             }
         }
 
-        tasks.forEach(System.out::println);
-
-        tasks.stream()
-                .filter(task -> task.getCategory()
-                        .equals(TaskCategory.WORK))
-                .forEach(System.out::println);
-
-        tasks.stream()
-                .map(AbstractTask::getDescription)
-                .forEach(System.out::println);
-
-        tasks.forEach(task -> {
-            String stringDate = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH).format(new Date());
-            LocalDate todayDate = LocalDate.parse(stringDate, formatter);
-            long daysBeforeDeadline = DAYS.between(todayDate, task.getDeadline());
-            System.out.println();
-            System.out.println(task.getDescription());
-            System.out.println(daysBeforeDeadline);
-        });
+        DataManagementUtil.remove(0);
+        DataManagementUtil.save();
 
 
         User<String> builtUser1 = new User.Builder<String>().name("Vasya").age(35).id("1").build();
@@ -163,7 +145,7 @@ public class App {
                 TaskPriority.findPriorityValue(priority), description, deadline);
     }
 
-    public static void taskAdd(AbstractTask abstractTask, List<AbstractTask> tasks){
+    public static void taskAdd(AbstractTask abstractTask, List<AbstractTask> tasks){ // Создан аналог этого метода через стрим и записан в папке util
         int count = 0;
         for (int i = 0; i < tasks.size(); i++) {
             if (abstractTask.getDescription().compareToIgnoreCase(tasks.get(i).getDescription()) == 0) {
