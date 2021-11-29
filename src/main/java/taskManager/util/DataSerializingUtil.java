@@ -25,7 +25,7 @@ public final class DataSerializingUtil {
     public static Object load() {
         Object object = null;
         try (InputStream fileInputStream = new FileInputStream(FILENAME);
-             ObjectInputStream inputStream = new ObjectInputStream(fileInputStream)) {
+             ObjectInputStream inputStream = new ObjectInputStream(fileInputStream)) { // конструкция try-with-resources
             object = inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
